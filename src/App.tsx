@@ -3,8 +3,11 @@ import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
 
+type Type1 = 'lilia' | 'lina'
+
 function App() {
   const [count, setCount] = useState(0)
+  const [name, setName] = useState<Type1>('lilia')
 
   return (
     <>
