@@ -9,8 +9,14 @@ import {
   query,
   orderBy,
   limit,
+  updateDoc,
+  setDoc,
+  where,
 } from 'firebase/firestore/lite'
 import { Testimonial } from './pages/About'
+
+import { signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, User } from 'firebase/auth'
+import { Etudiant } from './pages/Login'
 
 const firebaseConfig = {
   apiKey: 'AIzaSyCsBVdTmiEAgxVfJO8mMir8GmO1YnUwC0E',
@@ -106,20 +112,80 @@ export async function addTestimonial(testimonialData: Omit<Testimonial, 'id'>): 
   }
 }
 
-export async function loginUser(creds: { email: string; password: string }) {
-  const res = await fetch('/api/login', {
-    method: 'post',
-    body: JSON.stringify(creds),
-  })
-  const data = await res.json()
+export async function loginStudent(email: string, password: string): Promise<Etudiant> {
+  const q = query(collection(db, 'etudiants'), where('email', '==', email))
+  const querySnapshot = await getDocs(q)
 
-  if (!res.ok) {
-    throw {
-      message: data.message,
-      statusText: res.statusText,
-      status: res.status,
-    }
+  if (querySnapshot.empty) {
+    throw new Error("Aucun étudiant avec cet email.")
   }
 
-  return data
+  const docSnap = querySnapshot.docs[0]
+  const data = docSnap.data() as Etudiant
+
+  if (data.mdp !== password) {
+    throw new Error("Mot de passe incorrect.")
+  }
+
+  // Mettre à jour la date de dernière connexion
+  await updateDoc(doc(db, 'etudiants', docSnap.id), {
+    derniereConnexion: new Date().toISOString()
+  })
+
+  return { id: docSnap.id, ...data }
+}
+
+export async function registerStudent(email: string, password: string, name: string, niveau?: string): Promise<Etudiant> {
+  try {
+    const q = query(collection(db, 'etudiants'), where('email', '==', email))
+    const existing = await getDocs(q)
+
+    if (!existing.empty) {
+      throw new Error("Un compte avec cet email existe déjà.")
+    }
+
+    const newId = `${Date.now()}` // ou utilise nanoid / uuid
+    const etudiant: Etudiant = {
+      email,
+      name,
+      niveau: niveau || '',
+      mdp: password,
+      dateInscription: new Date().toISOString(),
+      derniereConnexion: new Date().toISOString()
+    }
+
+    await setDoc(doc(db, 'etudiants', newId), etudiant)
+
+    return { id: newId, ...etudiant }
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      throw error
+    } else {
+      throw new Error("Erreur lors de l'inscription")
+    }
+  }
+}
+
+export async function logoutStudent(): Promise<void> {
+  try {
+    localStorage.removeItem('etudiant')
+  } catch (error: unknown) {
+    throw new Error("Erreur lors de la déconnexion")
+  }
+}
+
+export async function getStudentInfo(userId: string): Promise<Etudiant | null> {
+  try {
+    const docRef = doc(db, 'etudiants', userId)
+    const docSnap = await getDoc(docRef)
+
+    if (docSnap.exists()) {
+      return { id: docSnap.id, ...docSnap.data() } as Etudiant
+    } else {
+      return null
+    }
+  } catch (error: unknown) {
+    console.error("Erreur lors de la récupération des informations de l'étudiant:", error)
+    return null
+  }
 }

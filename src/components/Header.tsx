@@ -39,7 +39,6 @@ function Header() {
         <Link to="login" className="login-link">
           <img src={imageUrl} className="login-icon" />
         </Link>
-        <button onClick={fakeLogOut}>X</button>
       </nav>
     </header>
   )
