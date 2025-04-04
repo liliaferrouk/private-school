@@ -5,7 +5,12 @@ import {
   doc,
   getDocs,
   getDoc,
+  addDoc,
+  query,
+  orderBy,
+  limit,
 } from 'firebase/firestore/lite'
+import { Testimonial } from './pages/About'
 
 const firebaseConfig = {
   apiKey: 'AIzaSyCsBVdTmiEAgxVfJO8mMir8GmO1YnUwC0E',
@@ -57,6 +62,47 @@ export async function getCourse(id: string) {
     price: data.price,
     level: data.level,
     imageUrl: data.imageUrl,
+  }
+}
+
+export async function getTestimonials(): Promise<Testimonial[]> {
+  const testimonialsCollectionRef = collection(db, 'temoignages')
+  
+  // Créer une requête qui trie par date (décroissant) et limite à 3 résultats
+  const q = query(
+    testimonialsCollectionRef,
+    orderBy('date', 'desc'), // Tri par date décroissante (plus récent d'abord)
+    limit(3) // Limite à 3 témoignages
+  )
+  
+  const snapshot = await getDocs(q)
+  return snapshot.docs.map((doc) => {
+    const data = doc.data()
+    return {
+      id: doc.id,
+      name: data.name || 'Nom inconnu',
+      message: data.message || 'Aucun message fourni.',
+      date: data.date || new Date().toISOString(),
+    }
+  })
+}
+
+export async function addTestimonial(testimonialData: Omit<Testimonial, 'id'>): Promise<string> {
+  try {
+    const testimonialsCollectionRef = collection(db, 'temoignages')
+    const docRef = await addDoc(testimonialsCollectionRef, testimonialData)
+    return docRef.id
+  } catch (error: unknown) {
+    // Gestion appropriée du type unknown
+    console.error("Erreur lors de l'ajout du témoignage:", error)
+    
+    // Convertir l'erreur en type Error pour avoir accès à la propriété message
+    if (error instanceof Error) {
+      throw error;
+    } else {
+      // Si ce n'est pas une instance d'Error, créer une nouvelle erreur
+      throw new Error("Une erreur inconnue s'est produite lors de l'ajout du témoignage");
+    }
   }
 }
 
