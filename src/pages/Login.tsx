@@ -40,6 +40,7 @@ function Login() {
   const navigate = useNavigate()
   const location = useLocation()
   const from = location.state?.from || '/espace-etudiant'
+  const message = location.state?.message 
 
   // Vérifier si un étudiant est déjà connecté (dans localStorage)
   useEffect(() => {
@@ -111,6 +112,7 @@ function Login() {
 
   return (
     <div className="login-container">
+      {message && <p className="login-error">{message}</p>}
       <h1>{loginMode ? 'Connexion étudiant' : 'Créer un compte étudiant'}</h1>
       {error && <p className="login-error">{error}</p>}
 

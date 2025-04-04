@@ -14,8 +14,6 @@ import {
   where,
 } from 'firebase/firestore/lite'
 import { Testimonial } from './pages/About'
-
-import { signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, User } from 'firebase/auth'
 import { Etudiant } from './pages/Login'
 
 const firebaseConfig = {
@@ -144,14 +142,15 @@ export async function registerStudent(email: string, password: string, name: str
       throw new Error("Un compte avec cet email existe déjà.")
     }
 
-    const newId = `${Date.now()}` // ou utilise nanoid / uuid
+    const newId = `${Date.now()}`
     const etudiant: Etudiant = {
       email,
       name,
       niveau: niveau || '',
       mdp: password,
       dateInscription: new Date().toISOString(),
-      derniereConnexion: new Date().toISOString()
+      derniereConnexion: new Date().toISOString(),
+      coursId: []
     }
 
     await setDoc(doc(db, 'etudiants', newId), etudiant)
@@ -187,5 +186,45 @@ export async function getStudentInfo(userId: string): Promise<Etudiant | null> {
   } catch (error: unknown) {
     console.error("Erreur lors de la récupération des informations de l'étudiant:", error)
     return null
+  }
+}
+
+/**
+ * Fonction pour inscrire un étudiant à un cours.
+ * @param etudiantId - L'ID de l'étudiant.
+ * @param coursId - L'ID du cours auquel l'étudiant veut s'inscrire.
+ */
+export async function inscrireEtudiantAuCours(etudiantId: string, coursId: string): Promise<void> {
+  try {
+    // Référence du document de l'étudiant dans Firestore
+    const etudiantRef = doc(db, 'etudiants', etudiantId)
+    
+    // Récupérer les données actuelles de l'étudiant
+    const docSnap = await getDoc(etudiantRef)
+
+    if (!docSnap.exists()) {
+      throw new Error("Étudiant non trouvé.")
+    }
+
+    const data = docSnap.data()
+    const coursInscrits: string[] = data.coursId || []
+
+    // Vérifie si l'étudiant est déjà inscrit au cours
+    if (coursInscrits.includes(coursId)) {
+      throw new Error("Vous êtes déjà inscrit à ce cours.")
+    }
+
+    // Ajoute l'ID du cours à la liste des cours inscrits
+    const updatedCours = [...coursInscrits, coursId]
+
+    // Mise à jour de l'étudiant avec le nouveau tableau de cours inscrits
+    await updateDoc(etudiantRef, {
+      coursId: updatedCours,
+    })
+
+    console.log("Inscription réussie au cours.")
+  } catch (err) {
+    console.error("Erreur lors de l'inscription au cours : ", err)
+    throw new Error("Erreur lors de l'inscription au cours.")
   }
 }
