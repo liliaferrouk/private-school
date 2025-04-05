@@ -1,6 +1,6 @@
 import { NavLink, Outlet } from 'react-router-dom'
 
-function HostLayout() {
+function EspaceEtudLayout() {
   const activeStyles = {
     fontWeight: 'bold',
     textDecoration: 'underline',
@@ -15,28 +15,28 @@ function HostLayout() {
           end
           style={({ isActive }) => (isActive ? activeStyles : undefined)}
         >
-          Dashboard
+          Mes Données
         </NavLink>
 
         <NavLink
-          to="income"
+          to="mes-cours"
           style={({ isActive }) => (isActive ? activeStyles : undefined)}
         >
-          Income
+          Mes Cours
         </NavLink>
 
         <NavLink
-          to="courses"
+          to="notifications"
           style={({ isActive }) => (isActive ? activeStyles : undefined)}
         >
-          Vans
+          Notifications
         </NavLink>
 
         <NavLink
-          to="reviews"
+          to="support"
           style={({ isActive }) => (isActive ? activeStyles : undefined)}
         >
-          Reviews
+          Support
         </NavLink>
       </nav>
       <Outlet />
@@ -44,4 +44,4 @@ function HostLayout() {
   )
 }
 
-export default HostLayout
+export default EspaceEtudLayout

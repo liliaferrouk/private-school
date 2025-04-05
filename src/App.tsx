@@ -7,16 +7,12 @@ import Vans from './pages/Courses/Courses'
 import VanDetail from './pages/Courses/CourseDetails'
 import Login from './pages/Login'
 import AuthRequired from './components/AuthRequired'
-import HostLayout from './components/HostLayout'
-import Dashboard from './pages/Host/Dashboard'
-import Income from './pages/Host/Income'
-import Reviews from './pages/Host/Reviews'
-import HostVans from './pages/Host/HostVans'
-import HostVanDetail from './pages/Host/HostVanDetail'
-import HostVanInfo from './pages/Host/HostVanInfo'
-import HostVanPricing from './pages/Host/HostVanPricing'
-import HostVanPhotos from './pages/Host/HostVanPhotos'
+import EspaceEtudLayout from './components/EspaceEtudLayout'
 import NotFound from './pages/NotFound'
+import MesDonnees from './pages/espaceEtudiant/MesDonnees'
+import MesCours from './pages/espaceEtudiant/MesCours'
+import Support from './pages/espaceEtudiant/Support'
+import Notifications from './pages/espaceEtudiant/Notifications'
 
 function App() {
   return (
@@ -30,16 +26,11 @@ function App() {
           <Route path="login" element={<Login />} />
 
           <Route element={<AuthRequired />}>
-            <Route path="espace-etudiant" element={<HostLayout />}>
-              <Route index element={<Dashboard />} />
-              <Route path="income" element={<Income />} />
-              <Route path="reviews" element={<Reviews />} />
-              <Route path="courses" element={<HostVans />} />
-              <Route path="courses/:id" element={<HostVanDetail />}>
-                <Route index element={<HostVanInfo />} />
-                <Route path="pricing" element={<HostVanPricing />} />
-                <Route path="photos" element={<HostVanPhotos />} />
-              </Route>
+            <Route path="espace-etudiant" element={<EspaceEtudLayout />}>
+              <Route index element={<MesDonnees />} />
+              <Route path="mes-cours" element={<MesCours />} />
+              <Route path="notifications" element={<Notifications />} />
+              <Route path="support" element={<Support />} />
             </Route>
           </Route>
 
