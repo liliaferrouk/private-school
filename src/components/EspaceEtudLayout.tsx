@@ -15,13 +15,6 @@ function EspaceEtudLayout() {
           end
           style={({ isActive }) => (isActive ? activeStyles : undefined)}
         >
-          Mes Données
-        </NavLink>
-
-        <NavLink
-          to="mes-cours"
-          style={({ isActive }) => (isActive ? activeStyles : undefined)}
-        >
           Mes Cours
         </NavLink>
 
@@ -30,13 +23,6 @@ function EspaceEtudLayout() {
           style={({ isActive }) => (isActive ? activeStyles : undefined)}
         >
           Notifications
-        </NavLink>
-
-        <NavLink
-          to="support"
-          style={({ isActive }) => (isActive ? activeStyles : undefined)}
-        >
-          Support
         </NavLink>
       </nav>
       <Outlet />

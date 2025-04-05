@@ -9,9 +9,7 @@ import Login from './pages/Login'
 import AuthRequired from './components/AuthRequired'
 import EspaceEtudLayout from './components/EspaceEtudLayout'
 import NotFound from './pages/NotFound'
-import MesDonnees from './pages/espaceEtudiant/MesDonnees'
 import MesCours from './pages/espaceEtudiant/MesCours'
-import Support from './pages/espaceEtudiant/Support'
 import Notifications from './pages/espaceEtudiant/Notifications'
 
 function App() {
@@ -27,10 +25,8 @@ function App() {
 
           <Route element={<AuthRequired />}>
             <Route path="espace-etudiant" element={<EspaceEtudLayout />}>
-              <Route index element={<MesDonnees />} />
-              <Route path="mes-cours" element={<MesCours />} />
+              <Route index element={<MesCours />} />
               <Route path="notifications" element={<Notifications />} />
-              <Route path="support" element={<Support />} />
             </Route>
           </Route>
 

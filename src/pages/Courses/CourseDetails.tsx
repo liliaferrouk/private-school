@@ -3,7 +3,7 @@ import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import { Link } from 'react-router-dom'
 import { Cours } from './Courses'
 import { getCourse, inscrireEtudiantAuCours } from '../../api'
-import { Etudiant } from '../Login'
+import { Etudiant } from '../../types'
 
 function CourseDetails() {
   const [cours, setCours] = React.useState<Cours | null>(null)

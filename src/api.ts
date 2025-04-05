@@ -13,8 +13,7 @@ import {
   setDoc,
   where,
 } from 'firebase/firestore/lite'
-import { Testimonial } from './pages/About'
-import { Etudiant } from './pages/Login'
+import { Etudiant, Testimonial } from './types'
 
 const firebaseConfig = {
   apiKey: 'AIzaSyCsBVdTmiEAgxVfJO8mMir8GmO1YnUwC0E',
@@ -189,11 +188,6 @@ export async function getStudentInfo(userId: string): Promise<Etudiant | null> {
   }
 }
 
-/**
- * Fonction pour inscrire un étudiant à un cours.
- * @param etudiantId - L'ID de l'étudiant.
- * @param coursId - L'ID du cours auquel l'étudiant veut s'inscrire.
- */
 export async function inscrireEtudiantAuCours(etudiantId: string, coursId: string): Promise<void> {
   try {
     // Référence du document de l'étudiant dans Firestore

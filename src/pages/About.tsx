@@ -3,13 +3,8 @@ import bgImg from '../assets/images/about-hero.jpg'
 import { useEffect, useState } from 'react'
 import { getTestimonials } from '../api'
 import TestimonialForm from '../components/TestimonialForm'
+import { Testimonial } from '../types'
 
-export interface Testimonial {
-  id: string
-  name: string
-  message: string
-  date: string
-}
 
 function About() {
   const [testimonials, setTestimonials] = useState<Testimonial[]>([])

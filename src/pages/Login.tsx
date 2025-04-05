@@ -1,28 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { loginStudent, logoutStudent, registerStudent } from '../api'
+import { Etudiant } from '../types'
 
-export interface Etudiant {
-  id?: string
-  email: string
-  mdp: string
-  name: string
-  niveau?: string
-  dateInscription?: string
-  derniereConnexion?: string
-  photoURL?: string
 
-  dateNaissance?: string
-  telephone?: string
-  adresse?: {
-    rue?: string
-    ville?: string
-    codePostal?: string
-    pays?: string
-  }
-
-  coursId?: string[] // IDs des cours auxquels l'étudiant est inscrit
-}
 
 function Login() {
   const [loginMode, setLoginMode] = useState(true) // true = login, false = sign up
