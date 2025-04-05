@@ -13,7 +13,7 @@ import {
   setDoc,
   where,
 } from 'firebase/firestore/lite'
-import { Etudiant, Testimonial } from './types'
+import { Etudiant, NotificationItem, Testimonial } from './types'
 
 const firebaseConfig = {
   apiKey: 'AIzaSyCsBVdTmiEAgxVfJO8mMir8GmO1YnUwC0E',
@@ -142,6 +142,8 @@ export async function registerStudent(email: string, password: string, name: str
     }
 
     const newId = `${Date.now()}`
+    const currentDate = new Date().toISOString()
+
     const etudiant: Etudiant = {
       email,
       name,
@@ -149,7 +151,15 @@ export async function registerStudent(email: string, password: string, name: str
       mdp: password,
       dateInscription: new Date().toISOString(),
       derniereConnexion: new Date().toISOString(),
-      coursId: []
+      coursId: [],
+      notifications: [
+        {
+          id: `welcome-${newId}`,
+          message: `Bienvenue sur notre plateforme, ${name}! Nous sommes ravis de vous compter parmi nos étudiants.`,
+          date: currentDate,
+          read: false
+        }
+      ]
     }
 
     await setDoc(doc(db, 'etudiants', newId), etudiant)
@@ -220,5 +230,113 @@ export async function inscrireEtudiantAuCours(etudiantId: string, coursId: strin
   } catch (err) {
     console.error("Erreur lors de l'inscription au cours : ", err)
     throw new Error("Erreur lors de l'inscription au cours.")
+  }
+}
+
+export async function getStudentNotifications(etudiantId: string): Promise<NotificationItem[]> {
+  try {
+    const docRef = doc(db, 'etudiants', etudiantId)
+    const docSnap = await getDoc(docRef)
+    
+    if (!docSnap.exists()) {
+      throw new Error("Étudiant non trouvé.")
+    }
+    
+    const data = docSnap.data()
+    return data.notifications || []
+  } catch (error: unknown) {
+    console.error("Erreur lors de la récupération des notifications:", error)
+    if (error instanceof Error) {
+      throw error
+    } else {
+      throw new Error("Erreur lors de la récupération des notifications.")
+    }
+  }
+}
+
+// Fonction pour ajouter une notification à un étudiant
+export async function addNotificationToStudent(
+  etudiantId: string, 
+  message: string
+): Promise<void> {
+  try {
+    const etudiantRef = doc(db, 'etudiants', etudiantId)
+    const docSnap = await getDoc(etudiantRef)
+    
+    if (!docSnap.exists()) {
+      throw new Error("Étudiant non trouvé.")
+    }
+    
+    const data = docSnap.data()
+    const notifications = data.notifications || []
+    
+    const newNotification = {
+      id: `notif-${Date.now()}`,
+      message,
+      date: new Date().toISOString(),
+      read: false
+    }
+    
+    await updateDoc(etudiantRef, {
+      notifications: [...notifications, newNotification]
+    })
+    
+    // Update localStorage if the student is currently logged in
+    const storedEtudiant = localStorage.getItem('etudiant')
+    if (storedEtudiant) {
+      const etudiant: Etudiant = JSON.parse(storedEtudiant)
+      if (etudiant.id === etudiantId) {
+        if (!etudiant.notifications) {
+          etudiant.notifications = []
+        }
+        etudiant.notifications.push(newNotification)
+        localStorage.setItem('etudiant', JSON.stringify(etudiant))
+      }
+    }
+  } catch (error) {
+    console.error("Erreur lors de l'ajout de la notification:", error)
+    throw new Error("Erreur lors de l'ajout de la notification.")
+  }
+}
+
+// Fonction pour marquer une notification comme lue
+export async function markNotificationAsRead(
+  etudiantId: string,
+  notificationId: string
+): Promise<void> {
+  try {
+    const etudiantRef = doc(db, 'etudiants', etudiantId)
+    const docSnap = await getDoc(etudiantRef)
+    
+    if (!docSnap.exists()) {
+      throw new Error("Étudiant non trouvé.")
+    }
+    
+    const data = docSnap.data()
+    if (!data.notifications) return
+    
+    const updatedNotifications = data.notifications.map((notif: any) => {
+      if (notif.id === notificationId) {
+        return { ...notif, read: true }
+      }
+      return notif
+    })
+    
+    await updateDoc(etudiantRef, {
+      notifications: updatedNotifications
+    })
+    
+    // Update localStorage if the student is currently logged in
+    const storedEtudiant = localStorage.getItem('etudiant')
+    if (storedEtudiant) {
+      const etudiant: Etudiant = JSON.parse(storedEtudiant)
+      if (etudiant.id === etudiantId && etudiant.notifications) {
+        etudiant.notifications = updatedNotifications
+        localStorage.setItem('etudiant', JSON.stringify(etudiant))
+      }
+    }
+  } catch (error) {
+    console.error("Erreur lors de la mise à jour de la notification:", error)
+    throw new Error("Erreur lors de la mise à jour de la notification.")
   }
 }

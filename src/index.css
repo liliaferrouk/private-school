@@ -302,9 +302,6 @@ i[class*="course-level-"] {
   text-decoration: none;
 }
 
-.course-detail-container .back-button:visited {
-}
-
 .course-detail-container .back-button span {
   text-decoration: underline;
 }
@@ -991,4 +988,106 @@ img.graph {
 
 .login-container > button:hover {
   background-color: #b02a37;
+}
+
+.notifications-container {
+  padding: 30px 20px;
+  background-color: #f9f9f9;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.06);
+  max-width: 800px;
+  margin: 40px auto;
+  font-family: "Inter", sans-serif;
+}
+
+/* Titre */
+.notifications-container h1 {
+  font-size: 28px;
+  margin-bottom: 25px;
+  color: #161616;
+  text-align: center;
+}
+
+/* Liste de notifications */
+.notifications-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Élément de notification */
+.notification-item {
+  background-color: white;
+  padding: 20px 25px;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: background-color 0.3s ease;
+}
+
+.notification-item.unread {
+  background-color: #fff8e6;
+}
+
+.notification-item.read {
+  background-color: #f2f2f2;
+}
+
+/* Contenu de la notification */
+.notification-content {
+  flex-grow: 1;
+}
+
+/* Message */
+.notification-message {
+  font-size: 16px;
+  font-weight: 500;
+  color: #333;
+  margin-bottom: 8px;
+}
+
+/* Date */
+.notification-date {
+  font-size: 14px;
+  color: #8c8c8c;
+}
+
+/* Bouton "Marquer comme lu" */
+.mark-read-button {
+  padding: 8px 14px;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  font-size: 14px;
+  font-weight: 600;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-left: 20px;
+  transition: background-color 0.3s;
+}
+
+.mark-read-button:hover {
+  background-color: #218838;
+}
+
+/* Chargement et erreurs */
+.error-container, .empty-notifications {
+  text-align: center;
+  padding: 40px;
+  background-color: #fff3f3;
+  color: #cc0000;
+  border-radius: 8px;
+  margin-top: 40px;
+}
+
+.empty-notifications h2 {
+  font-size: 22px;
+  color: #333;
+}
+
+.empty-notifications p {
+  font-style: italic;
+  color: #777;
 }

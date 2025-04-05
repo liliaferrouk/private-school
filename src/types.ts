@@ -5,6 +5,13 @@ export interface Testimonial {
   date: string
 }
 
+export interface NotificationItem {
+    id: string
+    message: string
+    date: string
+    read: boolean
+  }
+
 export interface Etudiant {
   id?: string
   email: string
@@ -14,6 +21,7 @@ export interface Etudiant {
   dateInscription?: string
   derniereConnexion?: string
   coursId?: string[] // IDs des cours auxquels l'étudiant est inscrit
+  notifications?: NotificationItem[]
 }
 
 export interface Cours {

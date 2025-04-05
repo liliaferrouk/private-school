@@ -1,7 +1,7 @@
 import React from 'react'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import { Link } from 'react-router-dom'
-import { getCourse, inscrireEtudiantAuCours } from '../../api'
+import { addNotificationToStudent, getCourse, inscrireEtudiantAuCours } from '../../api'
 import { Cours, Etudiant } from '../../types'
 
 function CourseDetails() {
@@ -77,7 +77,12 @@ function CourseDetails() {
         etudiant.coursId.push(id)
         localStorage.setItem('etudiant', JSON.stringify(etudiant))
       }
-      
+
+      await addNotificationToStudent(
+        etudiant.id,
+        `Vous vous êtes inscrit au cours "${cours?.name}".`
+      )
+
       setIsEnrolled(true)
       alert('Inscription réussie au cours ✅')
     } catch (err) {
