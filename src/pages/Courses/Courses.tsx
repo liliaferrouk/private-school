@@ -2,15 +2,7 @@ import React from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { Link } from 'react-router-dom'
 import { getCourses } from '../../api'
-
-export interface Cours {
-  id: string
-  name: string
-  description: string
-  price: number
-  level: 'primaire' | 'secondaire' | 'universite'
-  imageUrl: string
-}
+import { Cours } from '../../types'
 
 function Courses() {
   const [searchParams, setSearchParams] = useSearchParams()
